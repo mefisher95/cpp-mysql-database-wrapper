@@ -18,7 +18,7 @@ public:
                          std::to_string(error_code_) +
                          ": " + error_message_;
         std::cout << error_message_ << std::endl;
-        log_error(error_message_.c_str());
+        log_error(error_message_.c_str(), "error.log");
     }
 
 private:
@@ -36,9 +36,15 @@ public:
 
     std::string database() const;
     void use_database(const std::string & newdatabase);
+    void create_database(const char* name);
+    void drop_database(const char* name);
+
     void create_table(const char* name, const std::vector<const char*> fields);
     void drop_table(const char* name);
+    std::vector<std::vector<const char*>> desc_table(const char* name);
+
     std::vector<std::vector<char*>> select(const char* paramaters, const char* target);
+
 
 private:
     // Member variables

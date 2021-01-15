@@ -11,7 +11,7 @@ int main()
     v.push_back("Fields1 INT");
     v.push_back("Fields2 VARCHAR(200)");
     const char* name = "test_table2";
-    db.create_table(name, v);
+    // db.create_table(name, v);
     // db.drop_table(name);
 
     name = "test_table3";
@@ -26,6 +26,11 @@ int main()
         const char* string = result_vector[i][1];
         std::cout << index << ' ' << string << std::endl;
     }
+
+    db.desc_table("test_table2");
+
+    db.create_database("example");
+    db.drop_database("example");
 
     return 0;
 }

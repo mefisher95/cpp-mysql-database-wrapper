@@ -23,11 +23,9 @@ for i in include:
 for l in link:
     cmd += l + ' '
 cmd += '-o ' + output
-# print(cmd)
-# sys.exit()
 
 
-#testing
+print (os.path.abspath(os.getcwd() + '/logs'))
 
 if len(sys.argv) is 1:
     subprocess.run(cmd, shell=True)#, include, linkL, linkl, '-o', output])
@@ -35,11 +33,14 @@ if len(sys.argv) is 1:
 
 elif len(sys.argv) is 2:
     if sys.argv[1].lower() == 'c':
-        subprocess.run(['python', 'util/clean.py', '.out', 'safety=false'])
+        subprocess.run('python util/clean.py .out safety=false')
+
     elif sys.argv[1].lower() == 'm':
-        subprocess.run(['g++', prog])#, include, database, linkL, linkl, '-o', output])
+        subprocess.run(cmd, shell=True)
+
     elif sys.argv[1].lower() == 'r':
         subprocess.run(['./' + output])
+
     elif sys.argv[1].lower() == 'push':
         subprocess.run(['python', 'util/clean.py', '.out', 'safety=false'])
         subprocess.run(['git', 'add', '.'])
@@ -48,6 +49,7 @@ elif len(sys.argv) is 2:
 
     elif sys.argv[1].lower() == 'pull':
         subprocess.run(['git', 'pull'])
+
     else:
         raise ValueError('Invalid Input: Not a valid command')
 else:

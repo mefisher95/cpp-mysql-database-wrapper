@@ -1,0 +1,24 @@
+Fri Jan 15 13:19:48 2021
+>> CREATE TABLE test_table3(Fields1 INT,Fields2 VARCHAR(200)) engine=innodb;
+Fri Jan 15 13:19:48 2021
+>> DROP TABLE test_table3;
+Fri Jan 15 13:19:48 2021
+>> SELECT * FROM test_table2;
+Fri Jan 15 13:19:48 2021
+>> DESC test_table2;
+Fri Jan 15 13:19:48 2021
+>> CREATE DATABASE example;
+Fri Jan 15 13:19:48 2021
+>> DROP DATABASE example;
+Fri Jan 15 14:00:41 2021
+>> CREATE TABLE test_table3(Fields1 INT,Fields2 VARCHAR(200)) engine=innodb;
+Fri Jan 15 14:00:41 2021
+>> DROP TABLE test_table3;
+Fri Jan 15 14:00:41 2021
+>> SELECT * FROM test_table2;
+Fri Jan 15 14:00:41 2021
+>> DESC test_table2;
+Fri Jan 15 14:00:41 2021
+>> CREATE DATABASE example;
+Fri Jan 15 14:00:41 2021
+>> DROP DATABASE example;

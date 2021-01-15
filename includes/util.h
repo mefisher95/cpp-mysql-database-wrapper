@@ -7,6 +7,6 @@
 #include <ctime>
 
 
-void log_error(const char* error);
+void log_error(std::string, std::string);
 
 #endif
