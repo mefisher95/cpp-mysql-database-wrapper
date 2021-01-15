@@ -41,6 +41,7 @@ elif len(sys.argv) is 2:
     elif sys.argv[1].lower() == 'r':
         subprocess.run(['./' + output])
     elif sys.argv[1].lower() == 'push':
+        subprocess.run(['python', 'util/clean.py', '.out', 'safety=false'])
         subprocess.run(['git', 'add', '.'])
         subprocess.run(['git', 'commit', '-m', str(datetime.datetime.now())])
         subprocess.run(['git', 'push'])
