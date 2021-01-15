@@ -3,8 +3,6 @@
 
 int main()
 {
-    std::cout << "hello world" << std::endl;
-
     Database db;
     std::cout << db << std::endl;
     std::vector<const char*> v;

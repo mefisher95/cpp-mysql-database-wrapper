@@ -1,8 +1,0 @@
-Fri Jan 15 13:21:02 2021
->> MySQLException error 1: Table 'test_table2' already exists
-Fri Jan 15 13:24:38 2021
->> MySQLException error 1: Table 'test_table2' already exists
-Fri Jan 15 13:25:00 2021
->> MySQLException error 1: Table 'test_table2' already exists
-Fri Jan 15 14:00:26 2021
->> MySQLException error 1: Table 'test_table2' already exists

@@ -25,15 +25,15 @@ for l in link:
 cmd += '-o ' + output
 
 
-print (os.path.abspath(os.getcwd() + '/logs'))
-
 if len(sys.argv) is 1:
     subprocess.run(cmd, shell=True)#, include, linkL, linkl, '-o', output])
     subprocess.run(['./' + output])
 
 elif len(sys.argv) is 2:
     if sys.argv[1].lower() == 'c':
-        subprocess.run('python util/clean.py .out safety=false')
+        subprocess.run('python util/clean.py .out safety=false', shell=True)
+        for x in glob.glob(os.path.abspath(os.getcwd() + '/logs/*.log')):
+            f = open(x, 'w').close()
 
     elif sys.argv[1].lower() == 'm':
         subprocess.run(cmd, shell=True)
