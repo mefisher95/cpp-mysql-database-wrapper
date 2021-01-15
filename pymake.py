@@ -24,6 +24,7 @@ for l in link:
     cmd += l + ' '
 cmd += '-o ' + output
 
+print('example')
 
 if len(sys.argv) is 1:
     subprocess.run(cmd, shell=True)#, include, linkL, linkl, '-o', output])
