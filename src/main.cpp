@@ -11,7 +11,7 @@ int main()
     v.push_back("Fields1 INT");
     v.push_back("Fields2 VARCHAR(200)");
     const char* name = "test_table2";
-    // db.create_table(name, v);
+    db.create_table(name, v);
     // db.drop_table(name);
 
     name = "test_table3";
