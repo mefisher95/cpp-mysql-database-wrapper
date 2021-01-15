@@ -26,6 +26,9 @@ cmd += '-o ' + output
 # print(cmd)
 # sys.exit()
 
+
+#testing
+
 if len(sys.argv) is 1:
     subprocess.run(cmd, shell=True)#, include, linkL, linkl, '-o', output])
     subprocess.run(['./' + output])
