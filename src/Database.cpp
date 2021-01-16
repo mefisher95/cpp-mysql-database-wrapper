@@ -74,6 +74,20 @@ RESULT_VEC Database::desc_table(const std::string &name)
     return fields;
 }
 
+void insert(const std::string & name, const std::vector<std::string> &fields,
+            const std::vector<std::vector<std::string>> &arg_vect)
+{
+    std::string sql = "INSERT " + name + " (";
+    for (int i = 0; i < fields.size(); ++i)
+    {
+        sql += fields[i];
+        if (i < fields.size() - 1) sql += ", ";
+    }
+    sql += ")"
+
+    std::cout << sql << std::endl;
+}
+
 RESULT_VEC Database::select(const std::string &paramaters,
                             const std::string &target)
 {

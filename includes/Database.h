@@ -44,7 +44,10 @@ public:
     void create_table(const std::string &, const std::vector<std::string> &);
     void drop_table(const std::string &);
     RESULT_VEC desc_table(const std::string &);
-    
+
+    void insert(const std::string & name, const std::vector<std::string> &fields,
+                const std::vector<std::vector<std::string>> &arg_vect);
+
     RESULT_VEC select(const std::string &, const std::string&);
 
 
