@@ -7,6 +7,8 @@
 #include <vector>
 #include "util.h"
 
+typedef std::vector<std::vector<std::string>> RESULT_VEC;
+
 
 class MySQLException
 {
@@ -34,16 +36,16 @@ public:
     :user_(user), password_(pasw), database_(database), host_(host)
     {}
 
-    std::string database() const;
-    void use_database(const std::string & newdatabase);
-    void create_database(const char* name);
-    void drop_database(const char* name);
+    std::string current_database() const;
+    void use_database(const std::string &);
+    void create_database(const std::string &);
+    void drop_database(const std::string &);
 
-    void create_table(const char* name, const std::vector<const char*> fields);
-    void drop_table(const char* name);
-    std::vector<std::vector<const char*>> desc_table(const char* name);
-
-    std::vector<std::vector<char*>> select(const char* paramaters, const char* target);
+    void create_table(const std::string &, const std::vector<std::string> &);
+    void drop_table(const std::string &);
+    RESULT_VEC desc_table(const std::string &);
+    
+    RESULT_VEC select(const std::string &, const std::string&);
 
 
 private:
@@ -56,10 +58,12 @@ private:
 
     // Private Methods
 
-    MYSQL_RES* commit(const char* sql_request);
+    MYSQL_RES* commit(const char*);
 
 };
 
-std::ostream &operator<<(std::ostream &cout, const Database &db);
+std::ostream &operator<<(std::ostream &cout, const Database &);
+std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &);
+
 
 #endif

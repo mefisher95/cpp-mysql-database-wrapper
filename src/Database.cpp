@@ -1,23 +1,24 @@
 #include "Database.h"
 
 
-std::string Database::database() const { return database_; }
+std::string Database::current_database() const { return database_; }
 void Database::use_database(const std::string &newdatabase) { database_ = newdatabase; }
 
-void Database::create_database(const char* name)
+void Database::create_database(const std::string &name)
 {
     std::string sql = "CREATE DATABASE " + std::string(name) + ";";
     mysql_free_result(commit(sql.c_str()));
 }
 
-void Database::drop_database(const char* name)
+void Database::drop_database(const std::string &name)
 {
     std::string sql = "DROP DATABASE " + std::string(name) + ";";
     mysql_free_result(commit(sql.c_str()));
 }
 
 
-void Database::create_table(const char* name, const std::vector<const char*> fields)
+void Database::create_table(const std::string &name,
+                            const std::vector<std::string> &xfields)
 {
     std::string sql = "CREATE TABLE ";
     sql += std::string(name) + "(";
@@ -34,7 +35,7 @@ void Database::create_table(const char* name, const std::vector<const char*> fie
     mysql_free_result(commit(sql.c_str()));
 }
 
-void Database::drop_table(const char* name)
+void Database::drop_table(const std::string &name)
 {
     std::string sql = "DROP TABLE ";
     sql.append(name);
@@ -45,7 +46,7 @@ void Database::drop_table(const char* name)
     mysql_free_result(commit(sql.c_str()));
 }
 
-std::vector<std::vector<const char*>> Database::desc_table(const char* name)
+RESULT_VEC Database::desc_table(const std::string &name)
 {
     std::string sql = "DESC " + std::string(name) + ";";
     std::cout << sql << std::endl;
@@ -58,10 +59,10 @@ std::vector<std::vector<const char*>> Database::desc_table(const char* name)
 
     for (;(field = mysql_fetch_field(result)); ++field_count){}
 
-    std::vector<std::vector<const char*>> fields;
+    RESULT_VEC fields;
     while ((result_row =mysql_fetch_row(result)) != NULL)
     {
-        std::vector<const char*> param;
+        std::vector<std::string> param;
         for (int i = 0; i < field_count; ++i)
         {
             param.push_back((result_row[i] ? result_row[i] : "NULL"));
@@ -73,7 +74,8 @@ std::vector<std::vector<const char*>> Database::desc_table(const char* name)
     return fields;
 }
 
-std::vector<std::vector<char*>> Database::select(const char* paramaters, const char* target)
+RESULT_VEC Database::select(const std::string &paramaters,
+                            const std::string &target)
 {
     std::string sql = "SELECT ";
     sql.append(paramaters);
@@ -88,11 +90,11 @@ std::vector<std::vector<char*>> Database::select(const char* paramaters, const c
 
     for (;(field = mysql_fetch_field(result)); ++field_count){}
 
-    std::vector<std::vector<char*>> select_vector;
+    RESULT_VEC select_vector;
 
     while ((result_row =mysql_fetch_row(result)) != NULL)
     {
-        std::vector< char* > row_vector;
+        std::vector< std::string > row_vector;
         for (int i =0; i < field_count; ++i)
         {
             row_vector.push_back(result_row[i]);
@@ -135,5 +137,18 @@ MYSQL_RES* Database::commit(const char* sql_request)
 std::ostream &operator<<(std::ostream &cout, const Database &db)
 {
     cout << "<Database object " << &db << " conn=" << db.database() << ">";
+    return cout;
+}
+
+std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &result_vector)
+{
+    for (int i = 0; i < result_vector.size(); ++i)
+    {
+        for (int k = 0; k < result_vector[i].size(); ++k)
+        {
+            cout << result_vector[i][k] << ' ';
+        }
+        cout << std::endl;
+    }
     return cout;
 }
