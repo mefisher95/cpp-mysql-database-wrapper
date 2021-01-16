@@ -4,6 +4,8 @@ import datetime
 import glob
 import os
 
+print('Project: c++ mysql database wrapper')
+
 cmd = 'g++ '
 src = ['src/*.cpp']
 include = ['-I/usr/include/mysql', '-Iincludes']
