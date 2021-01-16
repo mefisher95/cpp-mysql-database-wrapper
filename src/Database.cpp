@@ -57,7 +57,11 @@ Database::Database(std::string user, std::string pasw,
 {}
 
 std::string Database::current_database() const { return database_; }
-void Database::use_database(const std::string &newdatabase) { database_ = newdatabase; }
+void Database::use_database(const std::string &newdatabase)
+{
+    if (is_database(newdatabase)) database_ = newdatabase;
+    else throw MySQLException(3, ("\"" + newdatabase + "\" is not a valid Database").c_str());
+}
 
 void Database::create_database(const std::string &name)
 {
@@ -121,7 +125,7 @@ void Database::drop_table(const std::string &name)
     std::string sql = "DROP TABLE ";
     sql.append(name);
     sql.append(";");
-    std::cout << sql << std::endl;
+    // std::cout << sql << std::endl;
 
     // remember to always free the result pointer!
     mysql_free_result(commit(sql.c_str()));
@@ -130,7 +134,7 @@ void Database::drop_table(const std::string &name)
 RESULT_VEC Database::desc_table(const std::string &name)
 {
     std::string sql = "DESC " + std::string(name) + ";";
-    std::cout << sql << std::endl;
+    // std::cout << sql << std::endl;
 
     MYSQL_RES* result = commit(sql.c_str());
     MYSQL_ROW result_row;
@@ -155,6 +159,33 @@ RESULT_VEC Database::desc_table(const std::string &name)
     return fields;
 }
 
+STRING_VEC Database::show_tables()
+{
+    std::string sql = "SHOW TABLES;";
+    MYSQL_RES* result = commit(sql.c_str());
+    MYSQL_ROW result_row;
+
+    std::vector<std::string> results;
+
+    while ((result_row =mysql_fetch_row(result)) != NULL)
+    {
+        results.push_back(result_row[0]);
+    }
+
+    return results;
+}
+
+bool Database::is_table(const std::string &name)
+{
+    std::vector<std::string> tables = show_tables();
+
+    for (int i = 0; i < tables.size(); ++i)
+    {
+        if (tables[i] == name) return true;
+    }
+    return false;
+}
+
 void Database::insert_row(const std::string & name, const std::vector<std::string> &fields,
                           const RESULT_VEC &arg_vect)
 {
@@ -166,6 +197,8 @@ void Database::insert_row(const std::string & name, const std::vector<std::strin
     }
     sql += ") VALUES (";
 
+    if (!arg_vect.size()) sql += ")";
+
     for (int i = 0; i < arg_vect.size(); ++i)
     {
         for (int k = 0; k < arg_vect[i].size(); ++k)
@@ -176,6 +209,7 @@ void Database::insert_row(const std::string & name, const std::vector<std::strin
         if (i < arg_vect.size() - 1) sql += "), (";
         else sql += ")";
     }
+
     sql += ";";
 
 
@@ -188,7 +222,7 @@ void Database::update_row(const std::string & name,
                           const std::string & where)
 {
     std::string sql = "UPDATE " + name + " SET " + set + " WHERE " + where + ";";
-    std::cout << sql << std::endl;
+    // std::cout << sql << std::endl;
     mysql_free_result(commit(sql.c_str()));
 
 }
@@ -207,6 +241,37 @@ RESULT_VEC Database::select(const std::string &paramaters,
     sql.append(paramaters);
     sql += " FROM ";
     sql.append(target);
+    sql += ";";
+
+
+    MYSQL_RES* result = commit(sql.c_str());
+    MYSQL_ROW result_row;
+    MYSQL_FIELD *field;
+    int field_count = 0;
+
+    for (;(field = mysql_fetch_field(result)); ++field_count){}
+
+    RESULT_VEC select_vector;
+    while ((result_row =mysql_fetch_row(result)) != NULL)
+    {
+        std::vector< std::string > row_vector;
+        for (int i =0; i < field_count; ++i)
+        {
+            if (result_row[i] == NULL) row_vector.push_back("NULL");
+            else row_vector.push_back(result_row[i]);
+        }
+
+        select_vector.push_back(row_vector);
+    }
+
+    mysql_free_result(result);
+    return select_vector;
+}
+
+RESULT_VEC Database::select(const std::string &paramaters)
+{
+    std::string sql = "SELECT ";
+    sql.append(paramaters);
     sql += ";";
 
     MYSQL_RES* result = commit(sql.c_str());
@@ -242,7 +307,7 @@ MYSQL_RES* Database::commit(const char* sql_request)
     if (conn == NULL)
     {
         const char* error = mysql_error(&mysql);
-        std::cout << error << std::endl;
+        // std::cout << error << std::endl;
         throw MySQLException(0, error);
     }
 

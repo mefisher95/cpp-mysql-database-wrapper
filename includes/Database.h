@@ -27,7 +27,7 @@ class Database
 {
 public:
     Database(std::string user = "root", std::string pasw = "root",
-             std::string database = "test", std::string host = "127.0.0.1");
+             std::string database = "", std::string host = "127.0.0.1");
 
     std::string current_database() const;
     void use_database(const std::string &);
@@ -39,12 +39,16 @@ public:
     void create_table(const std::string &, const std::vector<std::string> &);
     void drop_table(const std::string &);
     RESULT_VEC desc_table(const std::string &);
+    STRING_VEC show_tables();
+    bool is_table(const std::string &);
 
     void insert_row(const std::string &, const std::vector<std::string> &, const RESULT_VEC &);
     void update_row(const std::string &, const std::string &, const std::string &);
     void delete_row(const std::string &, const std::string &);
 
     RESULT_VEC select(const std::string &, const std::string&);
+    RESULT_VEC select(const std::string &);
+
 
 private:
     // Member variables
