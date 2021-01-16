@@ -3,12 +3,6 @@ import sys
 import datetime
 import glob
 import os
-#
-# for x in glob.glob("/home/michael/Desktop/ciss240/project/*.cpp"):
-#     print(x, 'test')
-#
-# sys.exit()
-#
 
 cmd = 'g++ '
 src = ['src/*.cpp']
@@ -24,10 +18,9 @@ for l in link:
     cmd += l + ' '
 cmd += '-o ' + output
 
-print('example')
 
 if len(sys.argv) is 1:
-    subprocess.run(cmd, shell=True)#, include, linkL, linkl, '-o', output])
+    subprocess.run(cmd, shell=True)
     subprocess.run(['./' + output])
 
 elif len(sys.argv) is 2:
