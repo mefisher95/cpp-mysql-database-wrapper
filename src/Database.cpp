@@ -16,9 +16,35 @@ void Database::drop_database(const std::string &name)
     mysql_free_result(commit(sql.c_str()));
 }
 
+std::vector<std::string> Database::show_databases()
+{
+    std::string sql = "SHOW DATABASES;";
+    MYSQL_RES* result = commit(sql.c_str());
+    MYSQL_ROW result_row;
+
+    std::vector<std::string> results;
+
+    while ((result_row =mysql_fetch_row(result)) != NULL)
+    {
+        results.push_back(result_row[0]);
+    }
+
+    return results;
+}
+
+bool Database::is_database(const std::string &name)
+{
+    std::vector<std::string> databases = show_databases();
+
+    for (int i = 0; i < databases.size(); ++i)
+    {
+        if (databases[i] == name) return true;
+    }
+    return false;
+}
 
 void Database::create_table(const std::string &name,
-                            const std::vector<std::string> &xfields)
+                            const std::vector<std::string> &fields)
 {
     std::string sql = "CREATE TABLE ";
     sql += std::string(name) + "(";
@@ -74,8 +100,8 @@ RESULT_VEC Database::desc_table(const std::string &name)
     return fields;
 }
 
-void insert(const std::string & name, const std::vector<std::string> &fields,
-            const std::vector<std::vector<std::string>> &arg_vect)
+void Database::insert_row(const std::string & name, const std::vector<std::string> &fields,
+                          const RESULT_VEC &arg_vect)
 {
     std::string sql = "INSERT " + name + " (";
     for (int i = 0; i < fields.size(); ++i)
@@ -83,9 +109,40 @@ void insert(const std::string & name, const std::vector<std::string> &fields,
         sql += fields[i];
         if (i < fields.size() - 1) sql += ", ";
     }
-    sql += ")"
+    sql += ") VALUES (";
 
+    for (int i = 0; i < arg_vect.size(); ++i)
+    {
+        for (int k = 0; k < arg_vect[i].size(); ++k)
+        {
+            sql += arg_vect[i][k];
+            if (k < arg_vect[i].size() - 1) sql += ", ";
+        }
+        if (i < arg_vect.size() - 1) sql += "), (";
+        else sql += ")";
+    }
+    sql += ";";
+
+
+    // std::cout << sql << std::endl;
+    mysql_free_result(commit(sql.c_str()));
+}
+
+void Database::update_row(const std::string & name,
+                          const std::string & set,
+                          const std::string & where)
+{
+    std::string sql = "UPDATE " + name + " SET " + set + " WHERE " + where + ";";
     std::cout << sql << std::endl;
+    mysql_free_result(commit(sql.c_str()));
+
+}
+
+void Database::delete_row(const std::string &name,
+                          const std::string &where)
+{
+    std::string sql = "DELETE FROM " + name + " WHERE " + where + ";";
+    mysql_free_result(commit(sql.c_str()));
 }
 
 RESULT_VEC Database::select(const std::string &paramaters,
@@ -150,7 +207,7 @@ MYSQL_RES* Database::commit(const char* sql_request)
 
 std::ostream &operator<<(std::ostream &cout, const Database &db)
 {
-    cout << "<Database object " << &db << " conn=" << db.database() << ">";
+    cout << "<Database object " << &db << " conn=" << db.current_database() << ">";
     return cout;
 }
 
@@ -164,5 +221,12 @@ std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &result_vector)
         }
         cout << std::endl;
     }
+    return cout;
+}
+
+std::ostream &operator<<(std::ostream &cout, const MySQLException & e)
+{
+    cout << "< MySQLException error# " << e.error_code()
+         << " : " << e.error_message() << " >";
     return cout;
 }
