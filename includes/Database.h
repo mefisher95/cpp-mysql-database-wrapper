@@ -8,22 +8,15 @@
 #include "util.h"
 
 typedef std::vector<std::vector<std::string>> RESULT_VEC;
+typedef std::vector<std::string> STRING_VEC;
 
 
 class MySQLException
 {
 public:
-    MySQLException(int error_code, const char* error)
-    : error_code_(error_code), error_message_(error)
-    {
-        std::string message = "MySQLException error " +
-                              std::to_string(error_code_) +
-                              ": " + error_message_;
-        // std::cout << error_message_ << std::endl;
-        log_error(message.c_str(), "error.log");
-    }
-    int error_code() const { return error_code_; }
-    std::string error_message() const { return error_message_; }
+    MySQLException(int error_code, const char* error);
+    int error_code() const;
+    std::string error_message() const;
 
 private:
     int error_code_;
@@ -34,15 +27,13 @@ class Database
 {
 public:
     Database(std::string user = "root", std::string pasw = "root",
-             std::string database = "test", std::string host = "127.0.0.1")
-    :user_(user), password_(pasw), database_(database), host_(host)
-    {}
+             std::string database = "test", std::string host = "127.0.0.1");
 
     std::string current_database() const;
     void use_database(const std::string &);
     void create_database(const std::string &);
     void drop_database(const std::string &);
-    std::vector<std::string> show_databases();
+    STRING_VEC show_databases();
     bool is_database(const std::string &);
 
     void create_table(const std::string &, const std::vector<std::string> &);
@@ -71,6 +62,8 @@ private:
 
 std::ostream &operator<<(std::ostream &cout, const Database &);
 std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &);
+std::ostream &operator<<(std::ostream &cout, const STRING_VEC &);
 std::ostream &operator<<(std::ostream &cout, const MySQLException &);
+
 
 #endif

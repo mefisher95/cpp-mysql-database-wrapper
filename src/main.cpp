@@ -8,6 +8,6 @@ int main()
     // db.show_databases();
 
     std::cout << db.is_database("tests") << std::endl;
-
+    std::cout << db.show_databases() << std::endl;
     return 0;
 }

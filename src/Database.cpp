@@ -1,5 +1,60 @@
 #include "Database.h"
 
+////////////////////////////////////////////////////////////////////////////////
+// MySQLException Class
+////////////////////////////////////////////////////////////////////////////////
+// Triggers when an error is flagged by the database. Automatically logs the
+// error to error.log
+////////////////////////////////////////////////////////////////////////////////
+
+
+MySQLException::MySQLException(int error_code, const char* error)
+: error_code_(error_code), error_message_(error)
+{
+    std::string message = "MySQLException error " +
+                          std::to_string(error_code_) +
+                          ": " + error_message_;
+    // std::cout << error_message_ << std::endl;
+    log_error(message.c_str(), "error.log");
+}
+
+int MySQLException::error_code() const { return error_code_; }
+std::string MySQLException::error_message() const { return error_message_; }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Database Class
+//==============================================================================
+// Provides a wrapper for most common mysql commands in c++.
+//==============================================================================
+// Methods:
+//  current_database() -> std::string
+//  use_database(std::string) -> void
+//  create_database(std::string) -> void
+//  show_databases() -> STRING_VEC
+//  is_database(std::string) -> bool
+//
+//  create_table(std::string, STRING_VEC) -> void
+//  drop_table(std::string) -> void
+//  desc_table(std::string) -> RESULT_VEC
+//
+//  insert_row(std::string, STRING_VEC, RESULT_VEC) -> void
+//  update_row(std::string, std::string, std::string) -> void
+//  delete_row(std::string, std::string) -> void
+//
+//  select(std::string, std::string) -> RESULT_VEC
+//
+// Private Methods:
+//
+//  commit(const char*) -> MYSQL_RES*
+//
+//==============================================================================
+
+
+Database::Database(std::string user, std::string pasw,
+                   std::string database, std::string host)
+:user_(user), password_(pasw), database_(database), host_(host)
+{}
 
 std::string Database::current_database() const { return database_; }
 void Database::use_database(const std::string &newdatabase) { database_ = newdatabase; }
@@ -16,7 +71,7 @@ void Database::drop_database(const std::string &name)
     mysql_free_result(commit(sql.c_str()));
 }
 
-std::vector<std::string> Database::show_databases()
+STRING_VEC Database::show_databases()
 {
     std::string sql = "SHOW DATABASES;";
     MYSQL_RES* result = commit(sql.c_str());
@@ -221,6 +276,18 @@ std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &result_vector)
         }
         cout << std::endl;
     }
+    return cout;
+}
+
+std::ostream &operator<<(std::ostream &cout, const STRING_VEC &string_vector)
+{
+    cout << "[ ";
+    for (int i = 0; i < string_vector.size(); ++i)
+    {
+        cout << string_vector[i];
+        if (i < string_vector.size() - 1) cout << ", ";
+    }
+    cout << "]";
     return cout;
 }
 
