@@ -336,16 +336,17 @@ std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &result_vector)
     cout << "[";
     for (int i = 0; i < result_vector.size(); ++i)
     {
-        cout << " [";
+        cout << "{";
         for (int k = 0; k < result_vector[i].size(); ++k)
         {
             cout << result_vector[i][k] << ' ';
             if (i < result_vector[i].size() - 1) cout << ", ";
 
         }
-        cout << "]";
+        cout << "}";
         if (i < result_vector.size() - 1) cout << ", ";
     }
+    cout << "]";
     return cout;
 }
 

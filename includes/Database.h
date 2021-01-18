@@ -69,5 +69,4 @@ std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &);
 std::ostream &operator<<(std::ostream &cout, const STRING_VEC &);
 std::ostream &operator<<(std::ostream &cout, const MySQLException &);
 
-
 #endif
