@@ -36,13 +36,13 @@ public:
     STRING_VEC show_databases();
     bool is_database(const std::string &);
 
-    void create_table(const std::string &, const std::vector<std::string> &);
+    void create_table(const std::string &, const STRING_VEC &);
     void drop_table(const std::string &);
     RESULT_VEC desc_table(const std::string &);
     STRING_VEC show_tables();
     bool is_table(const std::string &);
 
-    void insert_row(const std::string &, const std::vector<std::string> &, const RESULT_VEC &);
+    void insert_row(const std::string &, const STRING_VEC &, const RESULT_VEC &);
     void update_row(const std::string &, const std::string &, const std::string &);
     void delete_row(const std::string &, const std::string &);
 

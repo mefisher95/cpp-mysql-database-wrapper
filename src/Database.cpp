@@ -103,7 +103,7 @@ bool Database::is_database(const std::string &name)
 }
 
 void Database::create_table(const std::string &name,
-                            const std::vector<std::string> &fields)
+                            const STRING_VEC &fields)
 {
     std::string sql = "CREATE TABLE ";
     sql += std::string(name) + "(";
@@ -186,7 +186,7 @@ bool Database::is_table(const std::string &name)
     return false;
 }
 
-void Database::insert_row(const std::string & name, const std::vector<std::string> &fields,
+void Database::insert_row(const std::string & name, const STRING_VEC &fields,
                           const RESULT_VEC &arg_vect)
 {
     std::string sql = "INSERT " + name + " (";
@@ -333,13 +333,18 @@ std::ostream &operator<<(std::ostream &cout, const Database &db)
 
 std::ostream &operator<<(std::ostream &cout, const RESULT_VEC &result_vector)
 {
+    cout << "[";
     for (int i = 0; i < result_vector.size(); ++i)
     {
+        cout << " [";
         for (int k = 0; k < result_vector[i].size(); ++k)
         {
             cout << result_vector[i][k] << ' ';
+            if (i < result_vector[i].size() - 1) cout << ", ";
+
         }
-        cout << std::endl;
+        cout << "]";
+        if (i < result_vector.size() - 1) cout << ", ";
     }
     return cout;
 }
